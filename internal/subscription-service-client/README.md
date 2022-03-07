@@ -116,43 +116,9 @@ All URIs are relative to *http://localhost:8086*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*AdminSubscriptionApi* | [**AdminFindSubscriptionById**](docs/AdminSubscriptionApi.md#adminfindsubscriptionbyid) | **Get** /admin/subscriptions/{subscriptionId} | Find a subscription by Id
-*AdminSubscriptionApi* | [**CreateSubscription**](docs/AdminSubscriptionApi.md#createsubscription) | **Post** /admin/subscriptions | Create a new subscription
-*AdminSubscriptionApi* | [**DeleteSubscription**](docs/AdminSubscriptionApi.md#deletesubscription) | **Delete** /admin/subscriptions/{subscriptionId} | Deletes a subscription
-*AdminSubscriptionApi* | [**FindAllSubscriptions**](docs/AdminSubscriptionApi.md#findallsubscriptions) | **Get** /admin/subscriptions | Find all subscriptions
-*AdminSubscriptionPlanApi* | [**UpdateSubscriptionPlan**](docs/AdminSubscriptionPlanApi.md#updatesubscriptionplan) | **Post** /admin/subscriptions/{subscriptionId}/plan | Update plan of the subscription
-*AdminSubscriptionUpdateApi* | [**FindPendingUpdates**](docs/AdminSubscriptionUpdateApi.md#findpendingupdates) | **Get** /admin/subscriptions/{subscriptionId}/migrations/pending | Find pending updates of given subscription
-*AdminSubscriptionUpdateApi* | [**UpdateSubscription**](docs/AdminSubscriptionUpdateApi.md#updatesubscription) | **Post** /admin/subscriptions/{subscriptionId}/migrations | Update and deploy subscription
-*AdminUserApi* | [**DeleteUser**](docs/AdminUserApi.md#deleteuser) | **Delete** /admin/subscriptions/{subscriptionId}/users/{userId} | Delete user
-*AdminUserApi* | [**ResendInvitation**](docs/AdminUserApi.md#resendinvitation) | **Post** /admin/users/{userId}/resendInvitation | Resend invitations
-*AdminUserApi* | [**UpdateUser**](docs/AdminUserApi.md#updateuser) | **Put** /admin/subscriptions/{subscriptionId}/users/{userId} | Update user
 *GroupApi* | [**ListGroupsOfSubscription**](docs/GroupApi.md#listgroupsofsubscription) | **Get** /subscriptions/{subscriptionId}/groups | List groups of a subscription
-*MetricApi* | [**CreateMetric**](docs/MetricApi.md#createmetric) | **Post** /admin/metrics | Create new metric
-*MetricApi* | [**DeleteMetric**](docs/MetricApi.md#deletemetric) | **Delete** /admin/metrics/{metricId} | Delete a metric
-*MetricApi* | [**FindAllMetrics**](docs/MetricApi.md#findallmetrics) | **Get** /admin/metrics | Find all subscriptions
 *MetricApi* | [**FindAllMetricsPublic**](docs/MetricApi.md#findallmetricspublic) | **Get** /metrics | Find all subscriptions
-*MetricApi* | [**FindMetricById**](docs/MetricApi.md#findmetricbyid) | **Get** /admin/metrics/{metricId} | Find a metric by Id
-*MetricApi* | [**UpdateMetric**](docs/MetricApi.md#updatemetric) | **Put** /admin/metrics/{metricId} | Update a metric
 *MetricDataApi* | [**GetSubscriptionMetrics**](docs/MetricDataApi.md#getsubscriptionmetrics) | **Get** /subscriptions/{subscriptionId}/metrics | Get subscription metrics
-*PlanApi* | [**ActivatePlan**](docs/PlanApi.md#activateplan) | **Post** /admin/plan/{planId}/activate | Activate plan
-*PlanApi* | [**CreatePlan**](docs/PlanApi.md#createplan) | **Post** /admin/plan | Create new plan
-*PlanApi* | [**DeactivatePlan**](docs/PlanApi.md#deactivateplan) | **Post** /admin/plan/{planId}/deactivate | Deactivate plan
-*PlanApi* | [**DeletePlan**](docs/PlanApi.md#deleteplan) | **Delete** /admin/plan/{planId} | Delete plan by Id
-*PlanApi* | [**FindAllPlans**](docs/PlanApi.md#findallplans) | **Get** /admin/plan | Find all plans
-*PlanApi* | [**FindById**](docs/PlanApi.md#findbyid) | **Get** /admin/plan/{planId} | Find plan by Id
-*PlanApi* | [**UpdatePlan**](docs/PlanApi.md#updateplan) | **Put** /admin/plan/{planId} | Update plan
-*PlanApi* | [**UpdateToDefaultForNewSubscription**](docs/PlanApi.md#updatetodefaultfornewsubscription) | **Post** /admin/plan/{planId}/default | Update plan to be default plan
-*PrivateMetricApi* | [**ValidateHardLimit**](docs/PrivateMetricApi.md#validatehardlimit) | **Get** /private/subscriptions/{subscriptionId}/metrics/validate | Validate hard limit of given metric against current plan of the subscription
-*PrivateSubscriptionApi* | [**CreateCanonicalSubscription**](docs/PrivateSubscriptionApi.md#createcanonicalsubscription) | **Post** /private/subscriptions/canonical | Create a new canonical subscription
-*PrivateSubscriptionApi* | [**PrivateCreateSubscription**](docs/PrivateSubscriptionApi.md#privatecreatesubscription) | **Post** /private/subscriptions | Create a new subscription
-*PrivateSubscriptionApi* | [**PrivateDeleteSubscription**](docs/PrivateSubscriptionApi.md#privatedeletesubscription) | **Delete** /private/subscriptions/{subscriptionId} | Delete a subscription by Id
-*PrivateSubscriptionApi* | [**PrivateFindAllSubscriptions**](docs/PrivateSubscriptionApi.md#privatefindallsubscriptions) | **Get** /private/subscriptions | Find all subscriptions
-*PrivateSubscriptionApi* | [**PrivateFindSubscriptionById**](docs/PrivateSubscriptionApi.md#privatefindsubscriptionbyid) | **Get** /private/subscriptions/{subscriptionId} | Find a subscription by Id
-*PrivateSubscriptionApi* | [**PrivateGetGitConfiguration**](docs/PrivateSubscriptionApi.md#privategetgitconfiguration) | **Get** /private/subscriptions/{subscriptionId}/git/configuration | Get Git configuration by subscription Id
-*PrivateSubscriptionUpdateApi* | [**PrivateUpdateSubscription**](docs/PrivateSubscriptionUpdateApi.md#privateupdatesubscription) | **Post** /private/subscriptions/{subscriptionId}/migrations | Update and deploy subscription
-*PrivateUserApi* | [**ActivateUser**](docs/PrivateUserApi.md#activateuser) | **Post** /private/activation/{externalId} | 
-*PrivateUserApi* | [**CountUsers**](docs/PrivateUserApi.md#countusers) | **Get** /private/subscriptions/{subscriptionId}/users/count | Count users
-*PrivateUserApi* | [**ValidateInvitation**](docs/PrivateUserApi.md#validateinvitation) | **Post** /private/invitations | 
 *SubscriptionApi* | [**FindSubscriptionById**](docs/SubscriptionApi.md#findsubscriptionbyid) | **Get** /subscriptions/{subscriptionId} | Find a subscription by Id
 *SubscriptionApi* | [**GetPlanForSubscription**](docs/SubscriptionApi.md#getplanforsubscription) | **Get** /subscriptions/{subscriptionId}/plan | Get current plan of the subscription
 *SubscriptionApi* | [**UpdateOrganization**](docs/SubscriptionApi.md#updateorganization) | **Post** /subscriptions/{subscriptionId}/configuration/organization | Update organization of the subscription
@@ -165,19 +131,21 @@ Class | Method | HTTP request | Description
 *UserSelfApi* | [**FindSubscriptionsByCurrentUser**](docs/UserSelfApi.md#findsubscriptionsbycurrentuser) | **Get** /users/me/subscriptions | Find all subscriptions by current authenticated user
 *UserSelfApi* | [**GetCurrentUser**](docs/UserSelfApi.md#getcurrentuser) | **Get** /users/me | Get current user
 *UserSelfApi* | [**UpdateProfile**](docs/UserSelfApi.md#updateprofile) | **Put** /users/me/profile | Update user profile
-*UserSelfApi* | [**UploadAvatar**](docs/UserSelfApi.md#uploadavatar) | **Put** /users/me/avatar | Upload user avatar
 
 
 ## Documentation For Models
 
  - [ActivationRequest](docs/ActivationRequest.md)
  - [CanonicalSubscriptionRequest](docs/CanonicalSubscriptionRequest.md)
+ - [CreatedSubscription](docs/CreatedSubscription.md)
+ - [CreatedSubscriptionAllOf](docs/CreatedSubscriptionAllOf.md)
  - [GitConfigurationData](docs/GitConfigurationData.md)
  - [GitConfigurationPrivateResponse](docs/GitConfigurationPrivateResponse.md)
  - [GitConfigurationResponse](docs/GitConfigurationResponse.md)
  - [GitProvider](docs/GitProvider.md)
  - [Group](docs/Group.md)
  - [IdentityProviderData](docs/IdentityProviderData.md)
+ - [InlineObject](docs/InlineObject.md)
  - [InvitationEmails](docs/InvitationEmails.md)
  - [Metric](docs/Metric.md)
  - [MetricAllOf](docs/MetricAllOf.md)
@@ -190,8 +158,6 @@ Class | Method | HTTP request | Description
  - [MetricResponse](docs/MetricResponse.md)
  - [MetricSource](docs/MetricSource.md)
  - [MetricType](docs/MetricType.md)
- - [NewSubscription](docs/NewSubscription.md)
- - [NewSubscriptionAllOf](docs/NewSubscriptionAllOf.md)
  - [PasswordChangeRequest](docs/PasswordChangeRequest.md)
  - [Plan](docs/Plan.md)
  - [PlanHardLimitValidatorResponse](docs/PlanHardLimitValidatorResponse.md)

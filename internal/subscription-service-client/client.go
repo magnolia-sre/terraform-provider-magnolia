@@ -49,29 +49,11 @@ type APIClient struct {
 
 	// API Services
 
-	AdminSubscriptionApi *AdminSubscriptionApiService
-
-	AdminSubscriptionPlanApi *AdminSubscriptionPlanApiService
-
-	AdminSubscriptionUpdateApi *AdminSubscriptionUpdateApiService
-
-	AdminUserApi *AdminUserApiService
-
 	GroupApi *GroupApiService
 
 	MetricApi *MetricApiService
 
 	MetricDataApi *MetricDataApiService
-
-	PlanApi *PlanApiService
-
-	PrivateMetricApi *PrivateMetricApiService
-
-	PrivateSubscriptionApi *PrivateSubscriptionApiService
-
-	PrivateSubscriptionUpdateApi *PrivateSubscriptionUpdateApiService
-
-	PrivateUserApi *PrivateUserApiService
 
 	SubscriptionApi *SubscriptionApiService
 
@@ -98,18 +80,9 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
-	c.AdminSubscriptionApi = (*AdminSubscriptionApiService)(&c.common)
-	c.AdminSubscriptionPlanApi = (*AdminSubscriptionPlanApiService)(&c.common)
-	c.AdminSubscriptionUpdateApi = (*AdminSubscriptionUpdateApiService)(&c.common)
-	c.AdminUserApi = (*AdminUserApiService)(&c.common)
 	c.GroupApi = (*GroupApiService)(&c.common)
 	c.MetricApi = (*MetricApiService)(&c.common)
 	c.MetricDataApi = (*MetricDataApiService)(&c.common)
-	c.PlanApi = (*PlanApiService)(&c.common)
-	c.PrivateMetricApi = (*PrivateMetricApiService)(&c.common)
-	c.PrivateSubscriptionApi = (*PrivateSubscriptionApiService)(&c.common)
-	c.PrivateSubscriptionUpdateApi = (*PrivateSubscriptionUpdateApiService)(&c.common)
-	c.PrivateUserApi = (*PrivateUserApiService)(&c.common)
 	c.SubscriptionApi = (*SubscriptionApiService)(&c.common)
 	c.SubscriptionGitApi = (*SubscriptionGitApiService)(&c.common)
 	c.UserApi = (*UserApiService)(&c.common)

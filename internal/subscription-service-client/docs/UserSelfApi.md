@@ -8,7 +8,6 @@ Method | HTTP request | Description
 [**FindSubscriptionsByCurrentUser**](UserSelfApi.md#FindSubscriptionsByCurrentUser) | **Get** /users/me/subscriptions | Find all subscriptions by current authenticated user
 [**GetCurrentUser**](UserSelfApi.md#GetCurrentUser) | **Get** /users/me | Get current user
 [**UpdateProfile**](UserSelfApi.md#UpdateProfile) | **Put** /users/me/profile | Update user profile
-[**UploadAvatar**](UserSelfApi.md#UploadAvatar) | **Put** /users/me/avatar | Upload user avatar
 
 
 
@@ -263,70 +262,6 @@ No authorization required
 
 - **Content-Type**: application/json
 - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## UploadAvatar
-
-> UploadAvatar(ctx).File(file).Execute()
-
-Upload user avatar
-
-
-
-### Example
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
-)
-
-func main() {
-    file := os.NewFile(1234, "some_file") // *os.File |  (optional)
-
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.UserSelfApi.UploadAvatar(context.Background()).File(file).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `UserSelfApi.UploadAvatar``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-}
-```
-
-### Path Parameters
-
-
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiUploadAvatarRequest struct via the builder pattern
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **file** | ***os.File** |  | 
-
-### Return type
-
- (empty response body)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: multipart/form-data
-- **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)

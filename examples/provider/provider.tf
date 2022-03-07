@@ -7,4 +7,6 @@ terraform {
   }
 }
 
-provider "magnolia" {}
+provider "magnolia" {
+  token = "absadkadsjka" // or MAGNOLIA_TOKEN
+}

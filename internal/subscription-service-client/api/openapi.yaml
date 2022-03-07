@@ -366,26 +366,6 @@ paths:
       summary: Find all subscriptions by current authenticated user
       tags:
       - userSelf
-  /users/me/avatar:
-    put:
-      description: Upload user avatar
-      operationId: uploadAvatar
-      requestBody:
-        $ref: '#/components/requestBodies/inline_object'
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                file:
-                  format: binary
-                  type: string
-              type: object
-      responses:
-        "200":
-          description: OK
-      summary: Upload user avatar
-      tags:
-      - userSelf
   /users/me/changePassword:
     post:
       description: |-
@@ -489,12 +469,6 @@ components:
       schema:
         $ref: '#/components/schemas/NonEmptyString'
       style: simple
-  requestBodies:
-    inline_object:
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/inline_object'
   schemas:
     UserDetails:
       properties:
@@ -512,10 +486,10 @@ components:
       - function
       - lastName
       type: object
-    NewSubscription:
+    CreatedSubscription:
       allOf:
       - $ref: '#/components/schemas/UserDetails'
-      - $ref: '#/components/schemas/NewSubscription_allOf'
+      - $ref: '#/components/schemas/CreatedSubscription_allOf'
     Subscription:
       allOf:
       - $ref: '#/components/schemas/UserDetails'
@@ -1027,7 +1001,7 @@ components:
           format: binary
           type: string
       type: object
-    NewSubscription_allOf:
+    CreatedSubscription_allOf:
       properties:
         company:
           type: string

@@ -14,36 +14,36 @@ import (
 	"encoding/json"
 )
 
-// NewSubscriptionAllOf struct for NewSubscriptionAllOf
-type NewSubscriptionAllOf struct {
+// CreatedSubscriptionAllOf struct for CreatedSubscriptionAllOf
+type CreatedSubscriptionAllOf struct {
 	Company string `json:"company"`
 	Password string `json:"password"`
 	Country string `json:"country"`
 	PlanId *string `json:"planId,omitempty"`
 }
 
-// NewNewSubscriptionAllOf instantiates a new NewSubscriptionAllOf object
+// NewCreatedSubscriptionAllOf instantiates a new CreatedSubscriptionAllOf object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNewSubscriptionAllOf(company string, password string, country string) *NewSubscriptionAllOf {
-	this := NewSubscriptionAllOf{}
+func NewCreatedSubscriptionAllOf(company string, password string, country string) *CreatedSubscriptionAllOf {
+	this := CreatedSubscriptionAllOf{}
 	this.Company = company
 	this.Password = password
 	this.Country = country
 	return &this
 }
 
-// NewNewSubscriptionAllOfWithDefaults instantiates a new NewSubscriptionAllOf object
+// NewCreatedSubscriptionAllOfWithDefaults instantiates a new CreatedSubscriptionAllOf object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewNewSubscriptionAllOfWithDefaults() *NewSubscriptionAllOf {
-	this := NewSubscriptionAllOf{}
+func NewCreatedSubscriptionAllOfWithDefaults() *CreatedSubscriptionAllOf {
+	this := CreatedSubscriptionAllOf{}
 	return &this
 }
 
 // GetCompany returns the Company field value
-func (o *NewSubscriptionAllOf) GetCompany() string {
+func (o *CreatedSubscriptionAllOf) GetCompany() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -54,7 +54,7 @@ func (o *NewSubscriptionAllOf) GetCompany() string {
 
 // GetCompanyOk returns a tuple with the Company field value
 // and a boolean to check if the value has been set.
-func (o *NewSubscriptionAllOf) GetCompanyOk() (*string, bool) {
+func (o *CreatedSubscriptionAllOf) GetCompanyOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -62,12 +62,12 @@ func (o *NewSubscriptionAllOf) GetCompanyOk() (*string, bool) {
 }
 
 // SetCompany sets field value
-func (o *NewSubscriptionAllOf) SetCompany(v string) {
+func (o *CreatedSubscriptionAllOf) SetCompany(v string) {
 	o.Company = v
 }
 
 // GetPassword returns the Password field value
-func (o *NewSubscriptionAllOf) GetPassword() string {
+func (o *CreatedSubscriptionAllOf) GetPassword() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -78,7 +78,7 @@ func (o *NewSubscriptionAllOf) GetPassword() string {
 
 // GetPasswordOk returns a tuple with the Password field value
 // and a boolean to check if the value has been set.
-func (o *NewSubscriptionAllOf) GetPasswordOk() (*string, bool) {
+func (o *CreatedSubscriptionAllOf) GetPasswordOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -86,12 +86,12 @@ func (o *NewSubscriptionAllOf) GetPasswordOk() (*string, bool) {
 }
 
 // SetPassword sets field value
-func (o *NewSubscriptionAllOf) SetPassword(v string) {
+func (o *CreatedSubscriptionAllOf) SetPassword(v string) {
 	o.Password = v
 }
 
 // GetCountry returns the Country field value
-func (o *NewSubscriptionAllOf) GetCountry() string {
+func (o *CreatedSubscriptionAllOf) GetCountry() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -102,7 +102,7 @@ func (o *NewSubscriptionAllOf) GetCountry() string {
 
 // GetCountryOk returns a tuple with the Country field value
 // and a boolean to check if the value has been set.
-func (o *NewSubscriptionAllOf) GetCountryOk() (*string, bool) {
+func (o *CreatedSubscriptionAllOf) GetCountryOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -110,12 +110,12 @@ func (o *NewSubscriptionAllOf) GetCountryOk() (*string, bool) {
 }
 
 // SetCountry sets field value
-func (o *NewSubscriptionAllOf) SetCountry(v string) {
+func (o *CreatedSubscriptionAllOf) SetCountry(v string) {
 	o.Country = v
 }
 
 // GetPlanId returns the PlanId field value if set, zero value otherwise.
-func (o *NewSubscriptionAllOf) GetPlanId() string {
+func (o *CreatedSubscriptionAllOf) GetPlanId() string {
 	if o == nil || o.PlanId == nil {
 		var ret string
 		return ret
@@ -125,7 +125,7 @@ func (o *NewSubscriptionAllOf) GetPlanId() string {
 
 // GetPlanIdOk returns a tuple with the PlanId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *NewSubscriptionAllOf) GetPlanIdOk() (*string, bool) {
+func (o *CreatedSubscriptionAllOf) GetPlanIdOk() (*string, bool) {
 	if o == nil || o.PlanId == nil {
 		return nil, false
 	}
@@ -133,7 +133,7 @@ func (o *NewSubscriptionAllOf) GetPlanIdOk() (*string, bool) {
 }
 
 // HasPlanId returns a boolean if a field has been set.
-func (o *NewSubscriptionAllOf) HasPlanId() bool {
+func (o *CreatedSubscriptionAllOf) HasPlanId() bool {
 	if o != nil && o.PlanId != nil {
 		return true
 	}
@@ -142,11 +142,11 @@ func (o *NewSubscriptionAllOf) HasPlanId() bool {
 }
 
 // SetPlanId gets a reference to the given string and assigns it to the PlanId field.
-func (o *NewSubscriptionAllOf) SetPlanId(v string) {
+func (o *CreatedSubscriptionAllOf) SetPlanId(v string) {
 	o.PlanId = &v
 }
 
-func (o NewSubscriptionAllOf) MarshalJSON() ([]byte, error) {
+func (o CreatedSubscriptionAllOf) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["company"] = o.Company
@@ -163,38 +163,38 @@ func (o NewSubscriptionAllOf) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableNewSubscriptionAllOf struct {
-	value *NewSubscriptionAllOf
+type NullableCreatedSubscriptionAllOf struct {
+	value *CreatedSubscriptionAllOf
 	isSet bool
 }
 
-func (v NullableNewSubscriptionAllOf) Get() *NewSubscriptionAllOf {
+func (v NullableCreatedSubscriptionAllOf) Get() *CreatedSubscriptionAllOf {
 	return v.value
 }
 
-func (v *NullableNewSubscriptionAllOf) Set(val *NewSubscriptionAllOf) {
+func (v *NullableCreatedSubscriptionAllOf) Set(val *CreatedSubscriptionAllOf) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableNewSubscriptionAllOf) IsSet() bool {
+func (v NullableCreatedSubscriptionAllOf) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableNewSubscriptionAllOf) Unset() {
+func (v *NullableCreatedSubscriptionAllOf) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableNewSubscriptionAllOf(val *NewSubscriptionAllOf) *NullableNewSubscriptionAllOf {
-	return &NullableNewSubscriptionAllOf{value: val, isSet: true}
+func NewNullableCreatedSubscriptionAllOf(val *CreatedSubscriptionAllOf) *NullableCreatedSubscriptionAllOf {
+	return &NullableCreatedSubscriptionAllOf{value: val, isSet: true}
 }
 
-func (v NullableNewSubscriptionAllOf) MarshalJSON() ([]byte, error) {
+func (v NullableCreatedSubscriptionAllOf) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableNewSubscriptionAllOf) UnmarshalJSON(src []byte) error {
+func (v *NullableCreatedSubscriptionAllOf) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

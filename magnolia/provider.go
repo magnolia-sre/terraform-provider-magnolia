@@ -2,30 +2,35 @@ package magnolia
 
 import (
 	"context"
-	"fmt"
-	subscriptionRestClient "terraform-provider-magnolia/internal/subscription-service-client"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/okta/okta-sdk-golang/v2/okta"
 )
 
 // Provider -
 func Provider() *schema.Provider {
-	return &schema.Provider{
+	provider := &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"token": &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("MAGNOLIA_TOKEN", nil),
+				Description: "Magnolia TOKEN  API",
 			},
 		},
-		ResourcesMap:         map[string]*schema.Resource{},
-		DataSourcesMap:       map[string]*schema.Resource{},
-		ConfigureContextFunc: providerConfigure,
+		ResourcesMap:   map[string]*schema.Resource{},
+		DataSourcesMap: map[string]*schema.Resource{},
 	}
+
+	provider.ConfigureContextFunc = func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		config := Config{
+			Token: d.Get("token").(string),
+		}
+		return config.Client()
+	}
+	return provider
 }
 
+/*
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	token := d.Get("token").(string)
 	fmt.Println("Get token..." + token)
@@ -51,4 +56,4 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	return client, diags
-}
+}*/

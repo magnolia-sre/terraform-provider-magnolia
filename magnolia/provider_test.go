@@ -1,57 +1,35 @@
 package magnolia
 
 import (
-	"context"
-	"reflect"
-	"testing"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"os"
+	"testing"
 )
 
-func TestProvider(t *testing.T) {
-	tests := []struct {
-		name string
-		want *schema.Provider
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Provider(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Provider() = %v, want %v", got, tt.want)
-			}
-		})
+var testAccProviders map[string]func() (*schema.Provider, error)
+var testAccProvider *schema.Provider
+
+func init() {
+	testAccProvider = Provider()
+	testAccProviders = map[string]func() (*schema.Provider, error){
+		"magnolia": func() (*schema.Provider, error) { return testAccProvider, nil },
 	}
 }
 
-func Test_providerConfigure(t *testing.T) {
-	type args struct {
-		ctx context.Context
-		d   *schema.ResourceData
+func TestProvider(t *testing.T) {
+	if err := Provider().InternalValidate(); err != nil {
+		t.Fatalf("err: %s", err)
 	}
-	tests := []struct {
-		name  string
-		args  args
-		want  interface{}
-		want1 diag.Diagnostics
-	}{
-		{name: "test", args: {
-			ctx: context.TODO(),
-			d: &{
-				
-			}
-		}
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := providerConfigure(tt.args.ctx, tt.args.d)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("providerConfigure() got = %v, want %v", got, tt.want)
-			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("providerConfigure() got1 = %v, want %v", got1, tt.want1)
-			}
-		})
+}
+
+func TestProvider_impl(t *testing.T) {
+	var _ *schema.Provider = Provider()
+}
+
+//Use later for comming tests
+//PreCheck: func() { testAccPreCheck(t) },
+func testAccPreCheck(t *testing.T) {
+	if v := os.Getenv("MAGNOLIA_TOKEN"); v == "" {
+		t.Fatal("MAGNOLIA_TOKEN must be set for acceptance tests")
 	}
 }

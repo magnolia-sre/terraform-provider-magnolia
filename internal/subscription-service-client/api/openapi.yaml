@@ -1,0 +1,1995 @@
+openapi: 3.0.0
+info:
+  contact:
+    url: https://docs.magnolia-cms.com/
+  description: |
+    ## Create subscription
+
+    Create a new subscription.
+
+    ```
+    curl -v -d '{\
+        "company": "My Company", \
+        "firstName": "First", \
+        "lastName": "Last", \
+        "email": "first.last@magnolia-cms.com", \
+        "password": "some1%2Tres", \
+        "function": "CTO", \
+        "country": "Spain" \
+        }' \
+    -H "Content-Type: application/json" -X POST "http://localhost:8080/public/subscriptions"
+    ```
+    ## Update subscription
+
+    Update a new subscription. This is an idempotent operation.
+
+    ```
+    curl -v -d '{\
+        "id": "my-company" \
+        }' \
+    -H "Content-Type: application/json" -X POST "http://localhost:8080/admin/subscriptions/{subId}"
+    ```
+    ## Invite users
+
+    Invite a list of users to a subscription.
+
+    ## Validate invitation
+
+    Validate an invitation to a subscription.
+
+    ## Activate user
+
+    Activate a user for a subscription. The user needs an invitation to be activated.
+  title: Subscription Service Endpoints
+  version: 1.1.0
+servers:
+- description: local environment
+  url: http://localhost:8086
+tags:
+- name: adminSubscription
+- name: adminSubscriptionPlan
+- name: adminSubscriptionUpdate
+- name: privateSubscription
+- name: privateSubscriptionUpdate
+- name: subscription
+- name: subscriptionGit
+- name: user
+- name: userSelf
+- name: adminUser
+- name: privateUser
+- name: group
+- name: plan
+- name: metric
+- name: metricData
+- name: privateMetric
+paths:
+  /admin/subscriptions:
+    get:
+      description: Loads all stored subscriptions
+      operationId: findAllSubscriptions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: OK
+      summary: Find all subscriptions
+      tags:
+      - adminSubscription
+    post:
+      description: Create a new subscription
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json:
+            examples:
+              new:
+                value:
+                  company: My Company
+                  firstName: First
+                  lastName: Last
+                  email: some-email@domain.com
+                  password: password
+                  function: CTO
+                  country: Spain
+            schema:
+              $ref: '#/components/schemas/NewSubscription'
+        description: Subscription and owner information
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              examples:
+                new:
+                  value:
+                    id: my-first-company
+                    company: My Company
+                    firstName: First
+                    lastName: Last
+                    email: some-email@domain.com
+                    function: CTO
+                    creation: 2021-05-19T16:41:38.223+00:00
+                    country: Spain
+                    type: TRIAL
+                    planId: 406e720d-49a8-478f-89ff-9356280c4989
+                    identityProviderData:
+                      applicationId: 0oa1jd28hosZBS9aD0x7
+                      userGroupId: 00g1jd2cbt8N5z8GS0x7
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription creation request accepted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error validating new subscription data.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Subscription already exists.
+      summary: Create a new subscription
+      tags:
+      - adminSubscription
+  /admin/subscriptions/{subscriptionId}:
+    delete:
+      description: Deletes a subscription and associated data. Will also deprovision
+        the associated magnolia instance.
+      operationId: deleteSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "204":
+          description: Subscription is deleted and deprovision the associated magnolia
+            instance
+      summary: Deletes a subscription
+      tags:
+      - adminSubscription
+    get:
+      description: Find a subscription by Id
+      operationId: adminFindSubscriptionById
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: OK
+      summary: Find a subscription by Id
+      tags:
+      - adminSubscription
+  /admin/subscriptions/{subscriptionId}/plan:
+    post:
+      description: Change subscription plan to another
+      operationId: updateSubscriptionPlan
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            examples:
+              request:
+                value:
+                  planId: d8e19d0b-5b75-413a-ad0f-07aa7a574e91
+            schema:
+              $ref: '#/components/schemas/UpdatePlanRequest'
+        description: Subscription plan info (e.g planId)
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription plan update request accepted
+      summary: Update plan of the subscription
+      tags:
+      - adminSubscriptionPlan
+  /admin/subscriptions/{subscriptionId}/migrations:
+    post:
+      description: Update and deploy subscription
+      operationId: updateSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription update request accepted
+      summary: Update and deploy subscription
+      tags:
+      - adminSubscriptionUpdate
+  /admin/subscriptions/{subscriptionId}/migrations/pending:
+    get:
+      description: Find pending updates of given subscriptionId
+      operationId: findPendingUpdates
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SubscriptionUpdate'
+                type: array
+          description: OK
+      summary: Find pending updates of given subscription
+      tags:
+      - adminSubscriptionUpdate
+  /private/subscriptions:
+    get:
+      description: Loads all stored subscriptions
+      operationId: privateFindAllSubscriptions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: OK
+      summary: Find all subscriptions
+      tags:
+      - privateSubscription
+    post:
+      description: Create a new subscription
+      operationId: privateCreateSubscription
+      requestBody:
+        content:
+          application/json:
+            examples:
+              new:
+                value:
+                  company: My Company
+                  firstName: First
+                  lastName: Last
+                  email: some-email@domain.com
+                  password: password
+                  function: CTO
+                  country: Spain
+            schema:
+              $ref: '#/components/schemas/NewSubscription'
+        description: Subscription and owner information
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              examples:
+                new:
+                  value:
+                    id: my-first-company
+                    company: My Company
+                    firstName: First
+                    lastName: Last
+                    email: some-email@domain.com
+                    function: CTO
+                    creation: 2021-05-19T16:41:38.223+00:00
+                    country: Spain
+                    type: TRIAL
+                    planId: 406e720d-49a8-478f-89ff-9356280c4989
+                    identityProviderData:
+                      applicationId: 0oa1jd28hosZBS9aD0x7
+                      userGroupId: 00g1jd2cbt8N5z8GS0x7
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription creation request accepted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error validating new subscription data.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Subscription already exists.
+      summary: Create a new subscription
+      tags:
+      - privateSubscription
+  /private/subscriptions/{subscriptionId}:
+    delete:
+      description: Delete a subscription by Id
+      operationId: privateDeleteSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "204":
+          description: Subscription is deleted and deprovision the associated magnolia
+            instance
+      summary: Delete a subscription by Id
+      tags:
+      - privateSubscription
+    get:
+      description: Find a subscription by Id
+      operationId: privateFindSubscriptionById
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: OK
+      summary: Find a subscription by Id
+      tags:
+      - privateSubscription
+  /private/subscriptions/canonical:
+    post:
+      description: Create a new canonical subscription
+      operationId: createCanonicalSubscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanonicalSubscriptionRequest'
+        description: Canonical subscription request
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription creation request accepted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error validating new subscription data.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Subscription already exists.
+      summary: Create a new canonical subscription
+      tags:
+      - privateSubscription
+  /private/subscriptions/{subscriptionId}/git/configuration:
+    get:
+      description: Get Git configuration by subscription Id
+      operationId: privateGetGitConfiguration
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitConfigurationPrivateResponse'
+          description: OK
+      summary: Get Git configuration by subscription Id
+      tags:
+      - privateSubscription
+  /private/subscriptions/{subscriptionId}/migrations:
+    post:
+      description: Update and deploy subscription
+      operationId: privateUpdateSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription update request accepted
+      summary: Update and deploy subscription
+      tags:
+      - privateSubscriptionUpdate
+  /subscriptions/{subscriptionId}:
+    get:
+      description: Find a subscription by Id
+      operationId: findSubscriptionById
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: OK
+      summary: Find a subscription by Id
+      tags:
+      - subscription
+  /subscriptions/{subscriptionId}/configuration/organization:
+    post:
+      description: Update company name of the subscription
+      operationId: updateOrganization
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+        description: Organization information
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: OK
+      summary: Update organization of the subscription
+      tags:
+      - subscription
+  /subscriptions/{subscriptionId}/plan:
+    get:
+      description: Get current plan of the subscription
+      operationId: getPlanForSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: OK
+      summary: Get current plan of the subscription
+      tags:
+      - subscription
+  /subscriptions/{subscriptionId}/git/configuration:
+    get:
+      description: Get Git configuration by subscription Id
+      operationId: getGitConfiguration
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitConfigurationResponse'
+          description: OK
+      summary: Get Git configuration by subscription Id
+      tags:
+      - subscriptionGit
+    post:
+      description: Update Git configuration for the subscription
+      operationId: updateGitConfiguration
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGitConfigurationRequest'
+        description: Git configuration
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitConfigurationResponse'
+          description: OK
+      summary: Update Git configuration for the subscription
+      tags:
+      - subscriptionGit
+  /subscriptions/{subscriptionId}/git/sync:
+    post:
+      description: Sync Git repository
+      operationId: syncGitRepository
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          description: OK
+      summary: Sync Git repository
+      tags:
+      - subscriptionGit
+  /subscriptions/{subscriptionId}/invitations:
+    post:
+      description: You can invite users based on email and associate them to a group.
+      operationId: createInvitations
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationEmails'
+        description: List of emails to invite and a group to associate them with.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
+                type: array
+          description: Users which were activated — to which invitation mails were
+            sent.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Subscription id not found.
+      summary: Invite users to a subscription
+      tags:
+      - user
+  /private/invitations:
+    post:
+      description: After user receives an email, they need to validate themselves
+        with link provided in invitation. This call will check their token for validity
+        and allow them to fill out the invitation form later.
+      operationId: validateInvitation
+      parameters:
+      - description: Token sent by email in the user invitation.
+        explode: true
+        in: query
+        name: token
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Validated user.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not a valid token.
+      tags:
+      - privateUser
+  /private/activation/{externalId}:
+    post:
+      description: Activate user by completing credentials and user information.
+      operationId: activateUser
+      parameters:
+      - explode: false
+        in: path
+        name: externalId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            examples:
+              activate:
+                value:
+                  firstName: First
+                  lastName: Last
+                  password: password
+                  function: Developer
+            schema:
+              $ref: '#/components/schemas/ActivationRequest'
+        description: User information
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: User activated.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error validating user data.
+      tags:
+      - privateUser
+  /admin/subscriptions/{subscriptionId}/users/{userId}:
+    delete:
+      description: 'Deletes a user based on user''s id or email address. '
+      operationId: deleteUser
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      - description: id of user or user's email address
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+        "409":
+          description: Conflict — Such user does not exist
+      summary: Delete user
+      tags:
+      - adminUser
+    put:
+      description: Update user
+      operationId: updateUser
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      - description: id of user or user's email address
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not found - Such user doesn't exist
+      summary: Update user
+      tags:
+      - adminUser
+  /admin/users/{userId}/resendInvitation:
+    post:
+      description: You can resend invitation to a user, e.g. when their token has
+        expired.
+      operationId: resendInvitation
+      parameters:
+      - description: id of user or user's email address
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          description: OK
+      summary: Resend invitations
+      tags:
+      - adminUser
+  /subscriptions/{subscriptionId}/users:
+    get:
+      description: Lists all users of a subscription.
+      operationId: listUsersOfSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
+                type: array
+          description: OK
+        "404":
+          description: Not Found
+      summary: List users of a subscription
+      tags:
+      - user
+  /subscriptions/{subscriptionId}/groups:
+    get:
+      description: Lists all groups of a subscription.
+      operationId: listGroupsOfSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Group'
+                type: array
+          description: OK
+      summary: List groups of a subscription
+      tags:
+      - group
+  /private/subscriptions/{subscriptionId}/users/count:
+    get:
+      description: Returns the amount of users associated with this subscription.
+        The count is based on the group associated with that subscription, which does
+        not count in outsiders like Magnolia staff who may have access to the instance
+        for support purposes.
+      operationId: countUsers
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCount'
+          description: OK
+      summary: Count users
+      tags:
+      - privateUser
+  /users/me:
+    get:
+      description: |-
+        ## Okta case
+
+        Current user from Okta will be received
+      operationId: getCurrentUser
+      parameters:
+      - description: The id of the subscription the user is signed in.
+        explode: true
+        in: query
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+      summary: Get current user
+      tags:
+      - userSelf
+  /users/me/profile:
+    put:
+      description: Update first name and last name of the user
+      operationId: updateProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+        description: User profile information
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: OK
+      summary: Update user profile
+      tags:
+      - userSelf
+  /users/me/subscriptions:
+    get:
+      description: Find all subscriptions by current authenticated user
+      operationId: findSubscriptionsByCurrentUser
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: OK
+      summary: Find all subscriptions by current authenticated user
+      tags:
+      - userSelf
+  /users/me/avatar:
+    put:
+      description: Upload user avatar
+      operationId: uploadAvatar
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  format: binary
+                  type: string
+              type: object
+      responses:
+        "200":
+          description: OK
+      summary: Upload user avatar
+      tags:
+      - userSelf
+  /users/me/changePassword:
+    post:
+      description: |-
+        ## Okta case
+
+        Change password of current user from Okta
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/passwordChangeRequest'
+        description: Old and New Password values
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad Request
+      summary: Change current user password
+      tags:
+      - userSelf
+  /metrics:
+    get:
+      description: Loads all metrics
+      operationId: findAllMetricsPublic
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Metric'
+                type: array
+          description: OK
+      summary: Find all subscriptions
+      tags:
+      - metric
+  /admin/metrics:
+    get:
+      description: Loads all metrics
+      operationId: findAllMetrics
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Metric'
+                type: array
+          description: OK
+      summary: Find all subscriptions
+      tags:
+      - metric
+    post:
+      description: Create new metric
+      operationId: createMetric
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricRequest'
+        description: Metric information
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+          description: Created
+      summary: Create new metric
+      tags:
+      - metric
+  /admin/metrics/{metricId}:
+    delete:
+      description: Delete a metric
+      operationId: deleteMetric
+      parameters:
+      - description: Generated id of metric
+        explode: false
+        in: path
+        name: metricId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          description: OK
+      summary: Delete a metric
+      tags:
+      - metric
+    get:
+      description: Find a metric by Id
+      operationId: findMetricById
+      parameters:
+      - description: Generated id of metric
+        explode: false
+        in: path
+        name: metricId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+          description: OK
+      summary: Find a metric by Id
+      tags:
+      - metric
+    put:
+      description: Update a metric
+      operationId: updateMetric
+      parameters:
+      - description: Generated id of metric
+        explode: false
+        in: path
+        name: metricId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricRequest'
+        description: Metric information
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+          description: OK
+      summary: Update a metric
+      tags:
+      - metric
+  /subscriptions/{subscriptionId}/metrics:
+    get:
+      description: Get subscription metrics and data by subscriptionId
+      operationId: getSubscriptionMetrics
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricResponse'
+          description: OK
+      summary: Get subscription metrics
+      tags:
+      - metricData
+  /private/subscriptions/{subscriptionId}/metrics/validate:
+    get:
+      description: Validate hard limit of given metric
+      operationId: validateHardLimit
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      - description: Metric name
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanHardLimitValidatorResponse'
+          description: OK
+      summary: Validate hard limit of given metric against current plan of the subscription
+      tags:
+      - privateMetric
+  /admin/plan:
+    get:
+      description: Get all existing plans
+      operationId: findAllPlans
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Plan'
+                type: array
+          description: OK
+      summary: Find all plans
+      tags:
+      - plan
+    post:
+      description: Create new plan
+      operationId: createPlan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanRequest'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: Created
+      summary: Create new plan
+      tags:
+      - plan
+  /admin/plan/{planId}:
+    delete:
+      description: Delete plan by Id
+      operationId: deletePlan
+      parameters:
+      - description: Id of subscription plan
+        explode: false
+        in: path
+        name: planId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          description: OK
+      summary: Delete plan by Id
+      tags:
+      - plan
+    get:
+      description: Find plan by Id
+      operationId: findById
+      parameters:
+      - description: Id of subscription plan
+        explode: false
+        in: path
+        name: planId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: OK
+      summary: Find plan by Id
+      tags:
+      - plan
+    put:
+      description: Update plan
+      operationId: updatePlan
+      parameters:
+      - description: Id of subscription plan
+        explode: false
+        in: path
+        name: planId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: OK
+      summary: Update plan
+      tags:
+      - plan
+  /admin/plan/{planId}/default:
+    post:
+      description: Update plan to be default plan
+      operationId: updateToDefaultForNewSubscription
+      parameters:
+      - description: Id of subscription plan
+        explode: false
+        in: path
+        name: planId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: OK
+      summary: Update plan to be default plan
+      tags:
+      - plan
+  /admin/plan/{planId}/activate:
+    post:
+      description: Activate plan
+      operationId: activatePlan
+      parameters:
+      - description: Id of subscription plan
+        explode: false
+        in: path
+        name: planId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: OK
+      summary: Activate plan
+      tags:
+      - plan
+  /admin/plan/{planId}/deactivate:
+    post:
+      description: Deactivate plan
+      operationId: deactivatePlan
+      parameters:
+      - description: Id of subscription plan
+        explode: false
+        in: path
+        name: planId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: OK
+      summary: Deactivate plan
+      tags:
+      - plan
+components:
+  parameters:
+    userId:
+      description: id of user or user's email address
+      explode: false
+      in: path
+      name: userId
+      required: true
+      schema:
+        $ref: '#/components/schemas/NonEmptyString'
+      style: simple
+    subscriptionId:
+      description: Generated id of subscription
+      explode: false
+      in: path
+      name: subscriptionId
+      required: true
+      schema:
+        $ref: '#/components/schemas/NonEmptyString'
+      style: simple
+    planId:
+      description: Id of subscription plan
+      explode: false
+      in: path
+      name: planId
+      required: true
+      schema:
+        $ref: '#/components/schemas/NonEmptyString'
+      style: simple
+    metricId:
+      description: Generated id of metric
+      explode: false
+      in: path
+      name: metricId
+      required: true
+      schema:
+        $ref: '#/components/schemas/NonEmptyString'
+      style: simple
+  requestBodies:
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+  schemas:
+    UserDetails:
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        function:
+          type: string
+      required:
+      - email
+      - firstName
+      - function
+      - lastName
+      type: object
+    NewSubscription:
+      allOf:
+      - $ref: '#/components/schemas/UserDetails'
+      - $ref: '#/components/schemas/NewSubscription_allOf'
+    Subscription:
+      allOf:
+      - $ref: '#/components/schemas/UserDetails'
+      - $ref: '#/components/schemas/Subscription_allOf'
+      x-examples: {}
+    CanonicalSubscriptionRequest:
+      example:
+        id: id
+      properties:
+        id:
+          maxLength: 16
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      required:
+      - id
+      type: object
+    SubscriptionUpdate:
+      example:
+        name: name
+        description: description
+        version: 0
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: integer
+      required:
+      - name
+      - version
+      type: object
+      x-examples: {}
+    SubscriptionStatus:
+      enum:
+      - CREATED
+      - PROVISIONING
+      - ACTIVE
+      - INACTIVE
+      - ERROR
+      - DESTROYING
+      - UPDATING
+      - UPDATE_ERROR
+      title: Subscription status
+      type: string
+    SubscriptionErrorCause:
+      enum:
+      - PROVISIONING_JENKINS
+      - CIS
+      - DESTROYING_JENKINS
+      - PROVISIONING_DB
+      - DESTROYING_DB
+      title: Error cause in case subscription is in status ERROR
+      type: string
+    IdentityProviderData:
+      properties:
+        userGroupId:
+          type: string
+      type: object
+    GitConfigurationData:
+      properties:
+        gitSecret:
+          type: string
+        gitCloneUrl:
+          type: string
+        provider:
+          $ref: '#/components/schemas/GitProvider'
+      type: object
+    GitConfigurationResponse:
+      example:
+        gitSecret: gitSecret
+        gitCloneUrl: gitCloneUrl
+        publicKey: publicKey
+        webhookUrl: webhookUrl
+      properties:
+        publicKey:
+          type: string
+        gitSecret:
+          type: string
+        webhookUrl:
+          type: string
+        gitCloneUrl:
+          type: string
+        gitProvider:
+          $ref: '#/components/schemas/GitProvider'
+      type: object
+    GitConfigurationPrivateResponse:
+      example:
+        gitSecret: gitSecret
+        gitCloneUrl: gitCloneUrl
+      properties:
+        gitSecret:
+          type: string
+        gitCloneUrl:
+          type: string
+      type: object
+    GitProvider:
+      enum:
+      - GITHUB
+      - BITBUCKET
+      - BITBUCKET_CLOUD
+      title: Git provider
+      type: string
+    UpdateGitConfigurationRequest:
+      example:
+        gitCloneUrl: gitCloneUrl
+      properties:
+        gitCloneUrl:
+          pattern: ^(?!\s*$).+
+          title: NonEmptyString
+          type: string
+        gitProvider:
+          $ref: '#/components/schemas/GitProvider'
+      required:
+      - gitCloneUrl
+      - gitProvider
+      type: object
+    UpdateOrganizationRequest:
+      example:
+        company: company
+      properties:
+        company:
+          pattern: ^(?!\s*$).+
+          title: NonEmptyString
+          type: string
+      required:
+      - company
+      type: object
+    InvitationEmails:
+      description: You can invite multiple users together. The users will be assigned
+        to the input group.
+      example:
+        emails:
+        - emails
+        - emails
+        - emails
+        - emails
+        - emails
+        group: group
+      properties:
+        emails:
+          description: A set of emails, used e.g. for invitations or reactivation.
+          items:
+            format: email
+            type: string
+          maxItems: 10
+          minItems: 1
+          title: Emails
+          type: array
+        group:
+          type: string
+      required:
+      - emails
+      - group
+      title: Invitation emails
+      type: object
+    Emails:
+      description: A set of emails, used e.g. for invitations or reactivation.
+      items:
+        format: email
+        type: string
+      maxItems: 10
+      minItems: 1
+      title: Emails
+      type: array
+    UpdatePlanRequest:
+      example:
+        planId: planId
+      properties:
+        planId:
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+          type: string
+      required:
+      - planId
+      type: object
+    ActivationRequest:
+      example:
+        firstName: firstName
+        lastName: lastName
+        password: password
+        function: function
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        function:
+          type: string
+        password:
+          type: string
+      required:
+      - firstName
+      - function
+      - lastName
+      - password
+      type: object
+    UserCount:
+      description: represents the number of users in a subscription.
+      example:
+        date: 2000-01-23
+        result: 0
+        subscriptionId: subscriptionId
+      properties:
+        subscriptionId:
+          type: string
+        date:
+          format: date
+          type: string
+        result:
+          format: int64
+          type: integer
+      title: User count
+      type: object
+    NonEmptyString:
+      pattern: ^(?!\s*$).+
+      title: NonEmptyString
+      type: string
+    User:
+      example:
+        firstName: firstName
+        lastName: lastName
+        function: function
+        groups:
+        - groups
+        - groups
+        id: id
+        avatar: avatar
+        email: email
+        status: active
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        function:
+          type: string
+        status:
+          enum:
+          - active
+          - deprovisioned
+          - locked_out
+          - password_expired
+          - provisioned
+          - recovery
+          - staged
+          - suspended
+          type: string
+        groups:
+          items:
+            type: string
+          type: array
+        avatar:
+          type: string
+      required:
+      - email
+      - id
+      title: User
+      type: object
+    Group:
+      example:
+        name: name
+        id: id
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      title: Group
+      type: object
+    Error:
+      description: to improve in the future
+      type: object
+    UpdateUserRequest:
+      example:
+        firstName: firstName
+        lastName: lastName
+        group: group
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        group:
+          type: string
+      title: UpdateUserRequest
+      type: object
+    UpdateProfileRequest:
+      example:
+        firstName: firstName
+        lastName: lastName
+      properties:
+        firstName:
+          pattern: ^(?!\s*$).+
+          title: NonEmptyString
+          type: string
+        lastName:
+          pattern: ^(?!\s*$).+
+          title: NonEmptyString
+          type: string
+      required:
+      - firstName
+      - lastName
+      title: UpdateUserRequest
+      type: object
+    Plan:
+      description: Subscription plan
+      example:
+        metricConstraints:
+        - metricId: metricId
+          limit: 1
+          type: type
+        - metricId: metricId
+          limit: 1
+          type: type
+        name: name
+        update: 6
+        active: true
+        id: id
+        defaultForNewSubscriptions: true
+        creation: 0
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        creation:
+          format: int64
+          type: integer
+        update:
+          format: int64
+          type: integer
+        active:
+          type: boolean
+        defaultForNewSubscriptions:
+          type: boolean
+        metricConstraints:
+          items:
+            $ref: '#/components/schemas/MetricConstraint'
+          type: array
+      required:
+      - active
+      - defaultForNewSubscriptions
+      - id
+      - name
+      title: Plan
+      type: object
+      x-tags:
+      - plan
+    MetricConstraint:
+      description: |
+        Metric Constraint
+      example:
+        metricId: metricId
+        limit: 1
+        type: type
+      properties:
+        metricId:
+          type: string
+        type:
+          type: string
+        limit:
+          format: int32
+          type: integer
+      title: MetricConstraint
+      type: object
+      x-tags:
+      - plan
+    PlanRequest:
+      example:
+        metricConstraints:
+        - metricId: metricId
+          limit: 1
+          type: type
+        - metricId: metricId
+          limit: 1
+          type: type
+        name: name
+      properties:
+        name:
+          type: string
+        metricConstraints:
+          items:
+            $ref: '#/components/schemas/MetricConstraint'
+          type: array
+      required:
+      - name
+      title: PlanRequest
+      type: object
+    Metric:
+      allOf:
+      - $ref: '#/components/schemas/MetricBasicInfo'
+      - $ref: '#/components/schemas/MetricDetails'
+      - $ref: '#/components/schemas/Metric_allOf'
+      title: Metric
+    MetricRequest:
+      allOf:
+      - $ref: '#/components/schemas/MetricBasicInfo'
+      - $ref: '#/components/schemas/MetricDetails'
+      title: Metric request
+    MetricResponse:
+      example:
+        metrics:
+        - null
+        - null
+        updated: 0
+      properties:
+        metrics:
+          items:
+            $ref: '#/components/schemas/MetricData'
+          type: array
+        updated:
+          format: int64
+          type: integer
+      title: Metric response
+      type: object
+    MetricData:
+      allOf:
+      - $ref: '#/components/schemas/MetricBasicInfo'
+      - $ref: '#/components/schemas/MetricData_allOf'
+      title: Metric data
+    MetricBasicInfo:
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        unit:
+          type: string
+        status:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/MetricType'
+      required:
+      - label
+      - name
+      - type
+      title: Metric basic information
+      type: object
+    MetricDetails:
+      properties:
+        source:
+          $ref: '#/components/schemas/MetricSource'
+        endpoint:
+          type: string
+        path:
+          type: string
+        key:
+          type: string
+      required:
+      - source
+      title: Metric additional information
+      type: object
+    PlanHardLimitValidatorResponse:
+      example:
+        proceed: true
+        limit: 6
+        name: name
+        constraint: constraint
+        plan: plan
+        currentValue: 0.8008281904610115
+      properties:
+        proceed:
+          type: boolean
+        currentValue:
+          format: double
+          type: number
+        limit:
+          type: integer
+        constraint:
+          type: string
+        plan:
+          type: string
+        name:
+          type: string
+      title: Response for validate hard limit
+      type: object
+    MetricType:
+      enum:
+      - GAUGE
+      - COUNT
+      title: Metric type
+      type: string
+    MetricSource:
+      enum:
+      - AUTOGENERATED
+      - MAGNOLIA
+      - ENDPOINT
+      title: Metric source
+      type: string
+    passwordChangeRequest:
+      properties:
+        strict:
+          type: string
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+      title: Password change request
+      type: object
+    inline_object:
+      properties:
+        file:
+          format: binary
+          type: string
+      type: object
+    NewSubscription_allOf:
+      properties:
+        company:
+          type: string
+        password:
+          type: string
+        country:
+          type: string
+        planId:
+          type: string
+      required:
+      - company
+      - country
+      - password
+      type: object
+    Subscription_allOf_deploymentInfo:
+      properties:
+        version:
+          type: integer
+        lastUpdate:
+          format: date
+          type: string
+      type: object
+    Subscription_allOf_configuration:
+      properties:
+        identityProviderData:
+          $ref: '#/components/schemas/IdentityProviderData'
+        gitConfigurationData:
+          $ref: '#/components/schemas/GitConfigurationData'
+      type: object
+    Subscription_allOf:
+      properties:
+        id:
+          type: string
+        company:
+          type: string
+        creation:
+          type: string
+        country:
+          type: string
+        type:
+          type: string
+        alias:
+          type: string
+        planId:
+          type: string
+        provisioned:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/SubscriptionStatus'
+        deploymentInfo:
+          $ref: '#/components/schemas/Subscription_allOf_deploymentInfo'
+        configuration:
+          $ref: '#/components/schemas/Subscription_allOf_configuration'
+        errorCause:
+          $ref: '#/components/schemas/SubscriptionErrorCause'
+      required:
+      - company
+      - country
+      - id
+      - type
+      type: object
+    Metric_allOf:
+      properties:
+        id:
+          type: string
+      required:
+      - id
+      type: object
+    MetricData_allOf:
+      properties:
+        value:
+          format: double
+          type: number
+      type: object
+  securitySchemes:
+    SubscriptionSecurity:
+      scheme: basic
+      type: http

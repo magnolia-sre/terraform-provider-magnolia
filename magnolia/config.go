@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"os"
-	subscriptionRestClient "terraform-provider-magnolia/internal/subscription-service-client"
+	subscriptionRestClient "github.com/magnolia-sre/terraform-provider-magnolia/internal/subscription-service-client"
 )
 
 const APIKeyEnvVar = "MAGNOLIA_TOKEN"

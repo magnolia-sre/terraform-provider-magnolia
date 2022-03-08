@@ -1,4 +1,4 @@
-module terraform-provider-magnolia
+module github.com/magnolia-sre/terraform-provider-magnolia
 
 go 1.16
 

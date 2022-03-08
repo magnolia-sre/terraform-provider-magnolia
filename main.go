@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"log"
-	"terraform-provider-magnolia/internal/provider"
+	"github.com/magnolia-sre/terraform-provider-magnolia/internal/provider"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )

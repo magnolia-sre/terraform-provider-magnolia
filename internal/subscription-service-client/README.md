@@ -116,6 +116,10 @@ All URIs are relative to *http://localhost:8086*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*AdminSubscriptionApi* | [**AdminFindSubscriptionById**](docs/AdminSubscriptionApi.md#adminfindsubscriptionbyid) | **Get** /admin/subscriptions/{subscriptionId} | Find a subscription by Id
+*AdminSubscriptionApi* | [**CreateSubscription**](docs/AdminSubscriptionApi.md#createsubscription) | **Post** /admin/subscriptions | Create a new subscription
+*AdminSubscriptionApi* | [**DeleteSubscription**](docs/AdminSubscriptionApi.md#deletesubscription) | **Delete** /admin/subscriptions/{subscriptionId} | Deletes a subscription
+*AdminSubscriptionApi* | [**FindAllSubscriptions**](docs/AdminSubscriptionApi.md#findallsubscriptions) | **Get** /admin/subscriptions | Find all subscriptions
 *GroupApi* | [**ListGroupsOfSubscription**](docs/GroupApi.md#listgroupsofsubscription) | **Get** /subscriptions/{subscriptionId}/groups | List groups of a subscription
 *MetricApi* | [**FindAllMetricsPublic**](docs/MetricApi.md#findallmetricspublic) | **Get** /metrics | Find all subscriptions
 *MetricDataApi* | [**GetSubscriptionMetrics**](docs/MetricDataApi.md#getsubscriptionmetrics) | **Get** /subscriptions/{subscriptionId}/metrics | Get subscription metrics

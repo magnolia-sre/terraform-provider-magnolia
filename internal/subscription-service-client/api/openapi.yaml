@@ -63,6 +63,123 @@ tags:
 - name: metricData
 - name: privateMetric
 paths:
+  /admin/subscriptions:
+    get:
+      description: Loads all stored subscriptions
+      operationId: findAllSubscriptions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: OK
+      summary: Find all subscriptions
+      tags:
+      - adminSubscription
+    post:
+      description: Create a new subscription
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json:
+            examples:
+              new:
+                value:
+                  company: My Company
+                  firstName: First
+                  lastName: Last
+                  email: some-email@domain.com
+                  password: password
+                  function: CTO
+                  country: Spain
+            schema:
+              $ref: '#/components/schemas/CreatedSubscription'
+        description: Subscription and owner information
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              examples:
+                new:
+                  value:
+                    id: my-first-company
+                    company: My Company
+                    firstName: First
+                    lastName: Last
+                    email: some-email@domain.com
+                    function: CTO
+                    creation: 2021-05-19T16:41:38.223+00:00
+                    country: Spain
+                    type: TRIAL
+                    planId: 406e720d-49a8-478f-89ff-9356280c4989
+                    identityProviderData:
+                      applicationId: 0oa1jd28hosZBS9aD0x7
+                      userGroupId: 00g1jd2cbt8N5z8GS0x7
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Subscription creation request accepted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error validating new subscription data.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Subscription already exists.
+      summary: Create a new subscription
+      tags:
+      - adminSubscription
+  /admin/subscriptions/{subscriptionId}:
+    delete:
+      description: Deletes a subscription and associated data. Will also deprovision
+        the associated magnolia instance.
+      operationId: deleteSubscription
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "204":
+          description: Subscription is deleted and deprovision the associated magnolia
+            instance
+      summary: Deletes a subscription
+      tags:
+      - adminSubscription
+    get:
+      description: Find a subscription by Id
+      operationId: adminFindSubscriptionById
+      parameters:
+      - description: Generated id of subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          $ref: '#/components/schemas/NonEmptyString'
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: OK
+      summary: Find a subscription by Id
+      tags:
+      - adminSubscription
   /subscriptions/{subscriptionId}:
     get:
       description: Find a subscription by Id

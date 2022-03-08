@@ -43,10 +43,7 @@ func (c *Config) Client() (*MagnoliaClient, diag.Diagnostics) {
 		},
 	}
 
-	magnoliaClient, err := subscriptionRestClient.NewAPIClient(cfg)
-	if err != nil {
-		return nil, diag.FromErr(err)
-	}
+	magnoliaClient := subscriptionRestClient.NewAPIClient(cfg)
 
 	// DELETEME: Just for example
 	_, _, err = magnoliaClient.UserApi.ListUsersOfSubscription(context.WithValue(context.TODO(), subscriptionRestClient.ContextAccessToken, c.Token), "mabdtq1l6bx4ic94").Execute()

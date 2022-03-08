@@ -30,31 +30,28 @@ func resourceMagnoliaGitConfig() *schema.Resource {
 			},
 			"git_clone_url": {
 				Type:        schema.TypeString,
-				Required:    false,
+				Required:    true,
 				Description: "User SSH URl to be clone",
+			},
+			"webhook_content_type": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Webhook Content-Type when the git repository is GITHUB",
 			},
 			"public_key": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Required:    false,
 				Description: "Magnolia Public Key to interact whit",
 			},
 			"git_secret": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Required:    false,
 				Description: "Secret generated to be injected in the user git repository",
 			},
 			"webhook_url": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Required:    false,
 				Description: "Webhook URL generated to be injected in the user git repository",
-			},
-			"webhook_content_type": {
-				Type:        schema.TypeString,
-				Required:    false,
-				Description: "Webhook Content-Type when the git repository is GITHUB",
 			},
 		},
 	}

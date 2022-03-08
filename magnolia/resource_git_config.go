@@ -65,7 +65,7 @@ func resourceMagnoliaGitConfigCreate(ctx context.Context, d *schema.ResourceData
 		subscriptionRestClient.ContextAccessToken, token), d.Get("subscription_id").(string))
 	updateRequest.UpdateGitConfigurationRequest(subscriptionRestClient.UpdateGitConfigurationRequest{
 		GitCloneUrl: d.Get("git_clone_url").(string),
-		GitProvider: d.Get("git_provider").(subscriptionRestClient.GitProvider),
+		GitProvider: subscriptionRestClient.GitProvider(d.Get("git_provider").(string)),
 	})
 
 	response, _, err := updateRequest.Execute()

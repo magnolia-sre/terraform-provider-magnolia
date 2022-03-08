@@ -22,10 +22,7 @@ func Provider() *schema.Provider {
 	}
 
 	provider.ConfigureContextFunc = func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		config := Config{
-			Token: d.Get("token").(string),
-		}
-		return config.Client()
+		return Client()
 	}
 	return provider
 }

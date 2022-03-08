@@ -17,10 +17,11 @@ type Config struct {
 }
 
 type MagnoliaClient struct {
-	conn *subscriptionRestClient.APIClient
+	conn  *subscriptionRestClient.APIClient
+	token string
 }
 
-func (c *Config) Client() (*MagnoliaClient, diag.Diagnostics) {
+func Client() (*MagnoliaClient, diag.Diagnostics) {
 	var client MagnoliaClient
 
 	dirname, err := os.UserHomeDir()
@@ -33,7 +34,7 @@ func (c *Config) Client() (*MagnoliaClient, diag.Diagnostics) {
 		return nil, diag.FromErr(fmt.Errorf("[Err] No Token for Magnolia"))
 	}
 
-	c.Token = string(accessToken)
+	client.token = string(accessToken)
 
 	cfg := subscriptionRestClient.NewConfiguration()
 	cfg.Servers = subscriptionRestClient.ServerConfigurations{
@@ -46,7 +47,7 @@ func (c *Config) Client() (*MagnoliaClient, diag.Diagnostics) {
 	magnoliaClient := subscriptionRestClient.NewAPIClient(cfg)
 
 	// DELETEME: Just for example
-	_, _, err = magnoliaClient.UserApi.ListUsersOfSubscription(context.WithValue(context.TODO(), subscriptionRestClient.ContextAccessToken, c.Token), "mabdtq1l6bx4ic94").Execute()
+	_, _, err = magnoliaClient.UserApi.ListUsersOfSubscription(context.WithValue(context.TODO(), subscriptionRestClient.ContextAccessToken, client.token), "mabdtq1l6bx4ic94").Execute()
 
 	if err != nil {
 		return nil, diag.FromErr(err)

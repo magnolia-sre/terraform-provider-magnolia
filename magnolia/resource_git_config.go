@@ -85,7 +85,7 @@ func resourceMagnoliaGitConfigCreate(ctx context.Context, d *schema.ResourceData
 	return resourceMagnoliaGitConfigRead(ctx, d, meta)
 }
 
-func resourceMagnoliaGitConfigRead(ctx context.ConresourceUsertext, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceMagnoliaGitConfigRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	token := meta.(MagnoliaClient).token
 	conn := meta.(MagnoliaClient).conn
 

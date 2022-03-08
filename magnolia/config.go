@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	subscriptionRestClient "github.com/magnolia-sre/terraform-provider-magnolia/internal/subscription-service-client"
@@ -22,8 +23,12 @@ type MagnoliaClient struct {
 func (c *Config) Client() (*MagnoliaClient, diag.Diagnostics) {
 	var client MagnoliaClient
 
-	// FIXME: make credential file configuration
-	accessToken, err := ioutil.ReadFile("/Users/chanh.hua/.mgnl/access_token")
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
+
+	accessToken, err := ioutil.ReadFile(dirname + "/.mgnl/access_token")
 	if err != nil {
 		return nil, diag.FromErr(fmt.Errorf("[Err] No Token for Magnolia"))
 	}

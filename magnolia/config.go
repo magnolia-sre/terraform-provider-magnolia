@@ -1,9 +1,11 @@
 package magnolia
 
 import (
+	"context"
 	"fmt"
+	"io/ioutil"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"os"
 	subscriptionRestClient "github.com/magnolia-sre/terraform-provider-magnolia/internal/subscription-service-client"
 )
 
@@ -20,17 +22,30 @@ type MagnoliaClient struct {
 func (c *Config) Client() (*MagnoliaClient, diag.Diagnostics) {
 	var client MagnoliaClient
 
-	c.Token = os.Getenv(APIKeyEnvVar)
-
-	if c.Token == "" {
+	// FIXME: make credential file configuration
+	accessToken, err := ioutil.ReadFile("/Users/chanh.hua/.mgnl/access_token")
+	if err != nil {
 		return nil, diag.FromErr(fmt.Errorf("[Err] No Token for Magnolia"))
 	}
 
-	//subscriptionRestClient.ContextAccessToken
+	c.Token = string(accessToken)
 
 	cfg := subscriptionRestClient.NewConfiguration()
+	cfg.Servers = subscriptionRestClient.ServerConfigurations{
+		{
+			URL:         "https://subscription-service.beta.de.magnolia-cloud.com",
+			Description: "Staging environment",
+		},
+	}
 
 	magnoliaClient, err := subscriptionRestClient.NewAPIClient(cfg)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
+
+	// DELETEME: Just for example
+	_, _, err = magnoliaClient.UserApi.ListUsersOfSubscription(context.WithValue(context.TODO(), subscriptionRestClient.ContextAccessToken, c.Token), "mabdtq1l6bx4ic94").Execute()
+
 	if err != nil {
 		return nil, diag.FromErr(err)
 	}

@@ -5,9 +5,7 @@ import (
 )
 
 func TestConfig_Client(t *testing.T) {
-	c := Config{
-		Token: "somemagnoliatoken",
-	}
+	c := Config{}
 	_, diagnostics := c.Client()
 
 	if diagnostics.HasError() {

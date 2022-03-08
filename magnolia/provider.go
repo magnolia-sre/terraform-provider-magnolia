@@ -17,8 +17,8 @@ func Provider() *schema.Provider {
 				Description: "Magnolia TOKEN  API",
 			},
 		},
-		ResourcesMap:   map[string]*schema.Resource{
-			"magnolia_git_config" : resourceGitConfig(),
+		ResourcesMap: map[string]*schema.Resource{
+			"magnolia_git_config": resourceMagnoliaGitConfig(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{},
 	}

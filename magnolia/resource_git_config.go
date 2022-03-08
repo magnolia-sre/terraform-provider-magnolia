@@ -8,37 +8,59 @@ import (
 	subscriptionRestClient "github.com/magnolia-sre/terraform-provider-magnolia/internal/subscription-service-client"
 )
 
-func resourceGitConfig() *schema.Resource {
+func resourceMagnoliaGitConfig() *schema.Resource {
 	return &schema.Resource{
-		// This description is used by the documentation generator and the language server.
 		Description: "Sample resource in the Terraform provider scaffolding.",
 
-		CreateContext: resourceGitConfigCreate,
-		ReadContext:   resourceGitConfigRead,
-		UpdateContext: resourceGitConfigUpdate,
-		DeleteContext: resourceGitConfigDelete,
+		CreateContext: resourceMagnoliaGitConfigCreate,
+		ReadContext:   resourceMagnoliaGitConfigRead,
+		UpdateContext: resourceMagnoliaGitConfigUpdate,
+		DeleteContext: resourceMagnoliaGitConfigDelete,
 
 		Schema: map[string]*schema.Schema{
 			"subscription_id": {
 				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "subscription_id",
+				Required:    true,
+				Description: "ID of the magnolia subscription",
 			},
 			"git_provider": {
 				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Git provider",
+				Required:    true,
+				Description: "Git provider can be GITHUB, BITBUCKET or BITBUCKET_CLOUD ",
 			},
 			"git_clone_url": {
 				Type:        schema.TypeString,
+				Required:    false,
+				Description: "User SSH URl to be clone",
+			},
+			"public_key": {
+				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "git_clone_url",
+				Required:    false,
+				Description: "Magnolia Public Key to interact whit",
+			},
+			"git_secret": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Required:    false,
+				Description: "Secret generated to be injected in the user git repository",
+			},
+			"webhook_url": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Required:    false,
+				Description: "Webhook URL generated to be injected in the user git repository",
+			},
+			"webhook_content_type": {
+				Type:        schema.TypeString,
+				Required:    false,
+				Description: "Webhook Content-Type when the git repository is GITHUB",
 			},
 		},
 	}
 }
 
-func resourceGitConfigCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceMagnoliaGitConfigCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	token := meta.(MagnoliaClient).token
 	conn := meta.(MagnoliaClient).conn
 
@@ -50,6 +72,29 @@ func resourceGitConfigCreate(ctx context.Context, d *schema.ResourceData, meta i
 	})
 
 	response, _, err := updateRequest.Execute()
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("git_provider", response.GitProvider); err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId(d.Get("subscription_id").(string))
+
+	return resourceMagnoliaGitConfigRead(ctx, d, meta)
+}
+
+func resourceMagnoliaGitConfigRead(ctx context.ConresourceUsertext, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	token := meta.(MagnoliaClient).token
+	conn := meta.(MagnoliaClient).conn
+
+	var diags diag.Diagnostics
+
+	getRequest := conn.SubscriptionGitApi.GetGitConfiguration(context.WithValue(context.TODO(),
+		subscriptionRestClient.ContextAccessToken, token), d.Get("subscription_id").(string))
+
+	response, _, err := getRequest.Execute()
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -69,24 +114,36 @@ func resourceGitConfigCreate(ctx context.Context, d *schema.ResourceData, meta i
 	if err := d.Set("webhook_url", response.WebhookUrl); err != nil {
 		return diag.FromErr(err)
 	}
-	return nil
+
+	return diags
 }
 
-func resourceGitConfigRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
-	// client := meta.(*apiClient)
+func resourceMagnoliaGitConfigUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	token := meta.(MagnoliaClient).token
+	conn := meta.(MagnoliaClient).conn
 
-	return diag.Errorf("not implemented")
+	updateRequest := conn.SubscriptionGitApi.UpdateGitConfiguration(context.WithValue(context.TODO(),
+		subscriptionRestClient.ContextAccessToken, token), d.Get("subscription_id").(string))
+	updateRequest.UpdateGitConfigurationRequest(subscriptionRestClient.UpdateGitConfigurationRequest{
+		GitCloneUrl: d.Get("git_clone_url").(string),
+		GitProvider: d.Get("git_provider").(subscriptionRestClient.GitProvider),
+	})
+
+	response, _, err := updateRequest.Execute()
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("git_provider", response.GitProvider); err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId(d.Get("subscription_id").(string))
+
+	return resourceMagnoliaGitConfigRead(ctx, d, meta)
 }
 
-func resourceGitConfigUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
-	// client := meta.(*apiClient)
-
-	return diag.Errorf("not implemented")
-}
-
-func resourceGitConfigDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceMagnoliaGitConfigDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// use the meta value to retrieve your client from the provider configure method
 	// client := meta.(*apiClient)
 

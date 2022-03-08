@@ -58,8 +58,8 @@ func resourceMagnoliaGitConfig() *schema.Resource {
 }
 
 func resourceMagnoliaGitConfigCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	token := meta.(MagnoliaClient).token
-	conn := meta.(MagnoliaClient).conn
+	token := meta.(*MagnoliaClient).token
+	conn := meta.(*MagnoliaClient).conn
 
 	updateRequest := conn.SubscriptionGitApi.UpdateGitConfiguration(context.WithValue(context.TODO(),
 		subscriptionRestClient.ContextAccessToken, token), d.Get("subscription_id").(string))
@@ -83,8 +83,8 @@ func resourceMagnoliaGitConfigCreate(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceMagnoliaGitConfigRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	token := meta.(MagnoliaClient).token
-	conn := meta.(MagnoliaClient).conn
+	token := meta.(*MagnoliaClient).token
+	conn := meta.(*MagnoliaClient).conn
 
 	var diags diag.Diagnostics
 
@@ -116,8 +116,8 @@ func resourceMagnoliaGitConfigRead(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceMagnoliaGitConfigUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	token := meta.(MagnoliaClient).token
-	conn := meta.(MagnoliaClient).conn
+	token := meta.(*MagnoliaClient).token
+	conn := meta.(*MagnoliaClient).conn
 
 	updateRequest := conn.SubscriptionGitApi.UpdateGitConfiguration(context.WithValue(context.TODO(),
 		subscriptionRestClient.ContextAccessToken, token), d.Get("subscription_id").(string))

@@ -26,7 +26,7 @@ terraform {
 }
 
 # Configure the Magnolia Provider
-provider "fastly" {}
+provider "magnolia" {}
 
 # Create a Subscription and Configure you Hello SaaS
 resource "magnolia_subscription" "my_saas" {

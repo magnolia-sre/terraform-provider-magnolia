@@ -1,7 +1,6 @@
 package magnolia
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -16,8 +15,7 @@ func TestMagnoliaSubscription(t *testing.T) {
 			{
 				Config: testResource,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(
-						"magnolia_subscription.this", "email", regexp.MustCompile("^chanh.hua+terraform@magnolia-cms.com")),
+					resource.TestCheckResourceAttr("magnolia_subscription.this", "email", "chanh.hua+terraform@magnolia-cms.com"),
 				),
 			},
 		},

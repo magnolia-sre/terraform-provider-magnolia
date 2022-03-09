@@ -121,7 +121,7 @@ func resourceMagnoliaGitConfigUpdate(ctx context.Context, d *schema.ResourceData
 
 	updateRequest := conn.SubscriptionGitApi.UpdateGitConfiguration(context.WithValue(context.TODO(),
 		subscriptionRestClient.ContextAccessToken, token), d.Get("subscription_id").(string))
-	updateRequest.UpdateGitConfigurationRequest(subscriptionRestClient.UpdateGitConfigurationRequest{
+	updateRequest = updateRequest.UpdateGitConfigurationRequest(subscriptionRestClient.UpdateGitConfigurationRequest{
 		GitCloneUrl: d.Get("git_clone_url").(string),
 		GitProvider: subscriptionRestClient.GitProvider(d.Get("git_provider").(string)),
 	})

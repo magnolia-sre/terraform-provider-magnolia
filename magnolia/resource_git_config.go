@@ -141,8 +141,6 @@ func resourceMagnoliaGitConfigUpdate(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceMagnoliaGitConfigDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
-	// client := meta.(*apiClient)
-
-	return diag.Errorf("not implemented")
+	// TODO: Maybe consider to merge this resource with magnolia_subsription
+	return nil
 }

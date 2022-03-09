@@ -25,7 +25,7 @@ resource "magnolia_subscription" "my_hello_saas" {
 - **email** (String) The email address of the user for the Magnolia SaaS Subscription.
 - **password** (String) The password for the Magnolia SaaS Subscription login.
 
-## Ouput
+## Output
 
 - **id** The Magnolia SaaS Subscription identifier.
 - **alias** The Magnolia SaaS Subscription alias.

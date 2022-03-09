@@ -32,7 +32,7 @@ resource "magnolia_git_config" "my_hello_saas" {
 - **git_provider** (String) The Git provider to store the Hello-SaaS Magnolia application (GITHUB, BITBUCKET or BITBUCKET_CLOUD).
 - **git_clone_url** (String) The Git URL where your Hello-SaaS project is.
 
-## Ouput
+## Output
 
 - **public_key** The public key for Magnolia SaaS Subscription instances to interact whit.
 - **git_secret** The Git secret generated to configure the webhook in the Hello-SaaS repository settings.

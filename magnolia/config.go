@@ -1,7 +1,6 @@
 package magnolia
 
 import (
-	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -15,7 +14,7 @@ type MagnoliaClient struct {
 	token string
 }
 
-func Client() (*MagnoliaClient, diag.Diagnostics) {
+func client() (*MagnoliaClient, diag.Diagnostics) {
 	var client MagnoliaClient
 
 	dirname, err := os.UserHomeDir()
@@ -37,16 +36,6 @@ func Client() (*MagnoliaClient, diag.Diagnostics) {
 			Description: "Staging environment",
 		},
 	}
-
-	magnoliaClient := subscriptionRestClient.NewAPIClient(cfg)
-
-	// DELETEME: Just for example
-	_, _, err = magnoliaClient.UserApi.ListUsersOfSubscription(context.WithValue(context.TODO(), subscriptionRestClient.ContextAccessToken, client.token), "mabdtq1l6bx4ic94").Execute()
-
-	if err != nil {
-		return nil, diag.FromErr(err)
-	}
-
-	client.conn = magnoliaClient
+	client.conn = subscriptionRestClient.NewAPIClient(cfg)
 	return &client, nil
 }

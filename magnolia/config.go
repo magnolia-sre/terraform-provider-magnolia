@@ -10,12 +10,6 @@ import (
 	subscriptionRestClient "github.com/magnolia-sre/terraform-provider-magnolia/internal/subscription-service-client"
 )
 
-const APIKeyEnvVar = "MAGNOLIA_TOKEN"
-
-type Config struct {
-	Token string
-}
-
 type MagnoliaClient struct {
 	conn  *subscriptionRestClient.APIClient
 	token string

@@ -1,9 +1,9 @@
 package magnolia
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"os"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var testAccProviders map[string]func() (*schema.Provider, error)
@@ -28,8 +28,4 @@ func TestProvider_impl(t *testing.T) {
 
 //Use later for comming tests
 //PreCheck: func() { testAccPreCheck(t) },
-func testAccPreCheck(t *testing.T) {
-	if v := os.Getenv("MAGNOLIA_TOKEN"); v == "" {
-		t.Fatal("MAGNOLIA_TOKEN must be set for acceptance tests")
-	}
-}
+func testAccPreCheck(t *testing.T) {}

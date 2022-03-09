@@ -5,8 +5,7 @@ import (
 )
 
 func TestConfig_Client(t *testing.T) {
-	c := Config{}
-	_, diagnostics := c.Client()
+	_, diagnostics := Client()
 
 	if diagnostics.HasError() {
 		t.Errorf("Failed to create client")

@@ -2,6 +2,7 @@ package magnolia
 
 import (
 	"context"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -9,16 +10,10 @@ import (
 // Provider -
 func Provider() *schema.Provider {
 	provider := &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"token": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("MAGNOLIA_TOKEN", nil),
-				Description: "Magnolia TOKEN  API",
-			},
-		},
+		Schema: map[string]*schema.Schema{},
 		ResourcesMap: map[string]*schema.Resource{
-			"magnolia_git_config": resourceMagnoliaGitConfig(),
+			"magnolia_subscription": resourceSubscription(),
+			"magnolia_git_config":   resourceMagnoliaGitConfig(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{},
 	}

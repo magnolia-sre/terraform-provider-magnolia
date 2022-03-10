@@ -13,8 +13,7 @@
 
 ## Building The Provider locally (Mac Sample)
 
-1. You need to create a file name .terraformrc with the content:
-https://www.terraform.io/cli/config/config-file#explicit-installation-method-configuration
+1. You need to create the file `.terraformrc` with the content: https://www.terraform.io/cli/config/config-file#explicit-installation-method-configuration
 
 ```
 provider_installation {
@@ -30,20 +29,14 @@ provider_installation {
 
 This file will tell Terraform using local file system instead of direct download from registry
 
-2. You need to build the provider and copy to /var/tmp/terraform/providers/
-To ensure required sub directories created, please run
+2. You need to build the provider and copy it to `/var/tmp/terraform/providers/` to ensure the required subdirectories are created:
 
 ```
-mkdir -p /var/tmp/terraform/providers/registry.terraform.io/magnolia-sre/magnolia/0.1.7/darwin_amd64/
+mkdir -p /var/tmp/terraform/providers/registry.terraform.io/magnolia-sre/magnolia/<version>/darwin_amd64/
+go build -o terraform-provider-magnolia_v0.1.7 && mv terraform-provider-magnolia_<version> /var/tmp/terraform/providers/registry.terraform.io/magnolia-sre/magnolia/<version>/darwin_amd64/
 ```
 
-then build and put provider
-
-```
-go build -o terraform-provider-magnolia_v0.1.7 && mv terraform-provider-magnolia_v0.1.7 /var/tmp/terraform/providers/registry.terraform.io/magnolia-sre/magnolia/0.1.7/darwin_amd64/
-```
-
-3. Delete .terraform and file .terraform.lock.hcl  in terraform-provider-magnolia-demo, and run terraform init  again, and you are using local provider
+3. Delete the folder `.terraform` and the file `.terraform.lock.hcl` in [terraform-provider-magnolia-demo](https://github.com/magnolia-sre/terraform-provider-magnolia-demo) repository, and run `terraform init` again, for using the local provider:
 
 ```
 rm .terraform.lock.hcl && rm -rf .terraform/providers/registry.terraform.io/magnolia-sre/ && terraform init

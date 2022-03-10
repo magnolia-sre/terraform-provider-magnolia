@@ -5,7 +5,7 @@ description: |-
  Magnolia git configuration resource in the Terraform provider.
 ---
 
-# Resource `magnolia_git_config`
+# Resource: magnolia_git_config
 
 Creates and returns a git secret, and a webhook URL to inject later into your Git repository to interact whit a Magnolia SaaS subscription.
 
@@ -24,20 +24,14 @@ resource "magnolia_git_config" "my_hello_saas" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+- `subscription_id` - (Required) The Magnolia SaaS Subscription ID created.
+- `git_provider` - (Required) The Git provider to store the Hello-SaaS Magnolia application (GITHUB, BITBUCKET or BITBUCKET_CLOUD).
+- `git_clone_url` - (Required) The Git URL where your Hello-SaaS project is.
 
-- **subscription_id** (String) The Magnolia SaaS Subscription ID created.
-- **git_provider** (String) The Git provider to store the Hello-SaaS Magnolia application (GITHUB, BITBUCKET or BITBUCKET_CLOUD).
-- **git_clone_url** (String) The Git URL where your Hello-SaaS project is.
+## Attributes Reference
 
-## Output
-
-- **public_key** The public key for Magnolia SaaS Subscription instances to interact whit.
-- **git_secret** The Git secret generated to configure the webhook in the Hello-SaaS repository settings.
-- **webhook_url** The Webhook URL generated to configure the webhook endpoint in the Hello-SaaS repository settings.
-
-
-
-
+- `public_key` - The public key for Magnolia SaaS Subscription instances to interact whit.
+- `git_secret` - The Git secret generated to configure the webhook in the Hello-SaaS repository settings.
+- `webhook_url` - The Webhook URL generated to configure the webhook endpoint in the Hello-SaaS repository settings.
